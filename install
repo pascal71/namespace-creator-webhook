@@ -1,0 +1,21 @@
+# Install Ko
+go install github.com/google/ko@latest
+
+# Set your container registry
+export KO_DOCKER_REPO=your-registry.io/namespace-creator-webhook
+
+# Deploy cert-manager (if not already installed)
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.1/cert-manager.yaml
+
+# Create the namespace and deploy certs
+make create-namespace
+make deploy-certs
+
+# Wait for the certificate to be ready
+kubectl wait --for=condition=Ready -n webhook-system certificate/webhook-server-cert --timeout=60s
+
+# Deploy the webhook with Ko
+make ko-deploy
+
+# Deploy the webhook configuration with the CA bundle
+make deploy-webhook-config

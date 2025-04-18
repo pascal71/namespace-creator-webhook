@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: namespace-creator-webhook
+  namespace: webhook-system
+spec:
+  selector:
+    matchLabels:
+      app: namespace-creator-webhook
+  template:
+    metadata:
+      labels:
+        app: namespace-creator-webhook
+    spec:
+      containers:
+        - name: webhook
+          # Ko will replace this image reference
+          image: ko://github.com/yourusername/namespace-creator-webhook/cmd/webhook
+          args: [--port=9443, '--metrics-addr=:8080']
+          ports:
+            - containerPort: 9443
+              name: webhook-server
+            - containerPort: 8080
+              name: metrics
+          volumeMounts:
+            - name: cert
+              mountPath: /tmp/k8s-webhook-server/serving-certs
+              readOnly: true
+      volumes:
+        - name: cert
+          secret:
+            secretName: webhook-server-cert
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: namespace-creator-webhook
+  namespace: webhook-system
+spec:
+  ports:
+    - port: 443
+      targetPort: 9443
+  selector:
+    app: namespace-creator-webhook

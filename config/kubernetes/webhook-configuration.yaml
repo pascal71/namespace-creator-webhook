@@ -1,0 +1,23 @@
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: namespace-creator-webhook
+webhooks:
+  - name: namespace-creator.k8s.io
+    clientConfig:
+      service:
+        namespace: webhook-system
+        name: namespace-creator-webhook
+        path: /mutate-v1-namespace
+      caBundle: ${CA_BUNDLE}
+    rules:
+      - apiGroups: ['']
+        apiVersions: [v1]
+        resources: [namespaces]
+        operations: [CREATE]
+        scope: Cluster
+    admissionReviewVersions: [v1]
+    sideEffects: None
+    timeoutSeconds: 5
+    failurePolicy: Ignore
