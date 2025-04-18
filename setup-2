@@ -1,0 +1,17 @@
+# Create a new script called setup-fixed with these contents:
+
+# Initialize Go module (skip if already exists)
+# go mod init github.com/pascal71/namespace-creator-webhook
+
+# Clean up go.mod
+rm -f go.sum
+go mod tidy
+
+# Add dependencies with specific versions
+go get k8s.io/api@v0.28.3
+go get k8s.io/apimachinery@v0.28.3
+go get k8s.io/client-go@v0.28.3
+go get sigs.k8s.io/controller-runtime@v0.16.3
+
+# Then run go mod tidy to clean up dependencies
+go mod tidy

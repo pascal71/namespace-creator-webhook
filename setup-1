@@ -1,0 +1,8 @@
+# Create project directory
+#mkdir -p namespace-creator-webhook
+#cd namespace-creator-webhook
+
+# Create directory structure
+mkdir -p cmd/webhook
+mkdir -p pkg/webhook
+mkdir -p config/kubernetes
